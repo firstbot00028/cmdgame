@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Products: Anyone can read, only admin can write
+    // For simplicity in this demo, let's assume if there's an 'admin_secret' passed or just allow for now
+    // In a real app we'd use Firebase Auth and check a role.
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if true; // In production, restrict this!
+    }
+
+    // Orders: Anyone can create, only admin can list/read all
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update, delete: if true; // In production, restrict this!
+    }
+  }
+}
